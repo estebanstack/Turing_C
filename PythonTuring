@@ -1,0 +1,47 @@
+class MaquinaTuring:
+    def __init__(self, cinta):
+        self.cinta = cinta
+        self.cabezal = len(cinta) - 1
+        self.estado = 1
+        
+        # Definición de las reglas de la máquina de Turing
+        self.estadoActual = [1, 1, 2, 2]
+        self.lecturas = [0, 1, 1, 0]
+        self.escribe = [0, 0, 1, 1]
+        self.estadoSig = [1, 2, 2, 1]
+        self.mueveCabezal = [-1, -1, -1, -1]
+
+    def buscar(self, estadoA, lecturaA):
+        """Busca las reglas basadas en el estado actual y la lectura."""
+        for i in range(len(self.estadoActual)):
+            if estadoA == self.estadoActual[i] and lecturaA == self.lecturas[i]:
+                print(f"Debe escribir: {self.escribe[i]} va al estado nuevo: {self.estadoSig[i]} mueve el cabezal a: {self.mueveCabezal[i]}")
+                return {
+                    "Escribir": self.escribe[i],
+                    "estado": self.estadoSig[i],
+                    "cabezal": self.mueveCabezal[i]
+                }
+        return None
+
+    def procesar(self):
+        """Procesa la cinta de acuerdo con las reglas de la máquina."""
+        while True:
+            if self.cabezal >= 1:
+                print(f"Estado actual {self.estado}, valor en cinta {self.cinta[self.cabezal]}, ubicacion en cabezal: {self.cabezal}")
+                accionesLc = self.buscar(self.estado, self.cinta[self.cabezal])
+                if accionesLc:
+                    self.cinta[self.cabezal] = accionesLc["Escribir"]
+                    self.estado = accionesLc["estado"]
+                    self.cabezal += accionesLc["cabezal"]
+                else:
+                    break
+            else:
+                break
+        print(f"Resultado final: {self.cinta}")
+
+# Uso de la clase MaquinaTuring
+cinta_inicial = [0, 0, 1, 0, 1, 0, 0, 1]
+print(f"Numero actual: {cinta_inicial}")
+
+maquina = MaquinaTuring(cinta_inicial)
+maquina.procesar()
