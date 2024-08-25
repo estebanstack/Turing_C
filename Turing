@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 
 //multiplicacion x2
 int estadoActual[] = {1, 1, 2, 2};
@@ -15,6 +16,18 @@ escribe=[0,1,1,0]
 estadoSig=[1,2,2,2]
 mueveCabezal=[-1,-1,-1,-1]
 */
+
+int binario_a_decimal(int cinta[], int n) {
+    int decimal = 0;
+    
+    // Recorremos la cinta desde el final, multiplicando cada bit por 2 elevado a su posición
+    int l=0;
+    for (l = 0; l < n; l++) {
+        decimal += cinta[n - 1 - l] * pow(2, l);
+    }
+
+    return decimal;
+}
 
 struct Acciones {
     int escribir;
@@ -43,13 +56,17 @@ int main() {
     int cinta[] = {0, 0, 1, 0, 1, 0, 0, 1};
     int cabezal = 7;
     int estado = 1;
-
-    printf("Numero actual: ");
+    
+	printf("Numero actual: ");
+	int num = sizeof(cinta) / sizeof(cinta[0]);
+    int decimalPrim = binario_a_decimal(cinta, num);
+    printf("El numero binario es: ");
     int j=0;
-    for (j = 0; j < 8; j++) {
-        printf("%d ", cinta[j]);
+    for (j = 0;j < num; j++) {
+        printf("%d", cinta[j]);
     }
-    printf("\n");
+  
+    printf("\nEn decimal es: %d\n", decimalPrim);
 
     while (1) {
         if (cabezal >= 1) {
@@ -65,11 +82,15 @@ int main() {
     }
 
     printf("Resultado final: ");
+    int n = sizeof(cinta) / sizeof(cinta[0]);
+    int decimal = binario_a_decimal(cinta, n);
+    printf("El numero binario es: ");
     int k=0;
-    for (k = 0; k < 8; k++) {
-        printf("%d ", cinta[k]);
+    for (k = 0;k < n; k++) {
+        printf("%d", cinta[k]);
     }
-    printf("\n");
+  
+    printf("\nEn decimal es: %d\n", decimal);
 
     return 0;
 }
