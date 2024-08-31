@@ -1,31 +1,47 @@
 #include <stdio.h>
 #include <math.h>
 
-//multiplicacion x2
+/* Configuración de la resta (-1) 
+int estadoActual[] = {1, 1, 2, 2, 3};
+int lecturas[] = {1, 0, 0, 1, 0};
+int escribe[] = {0, 1, 1, 0, 1};
+int estadoSig[] = {3, 1, 2, 3, 0};  // El estado 3 indica que la operación ha terminado
+int mueveCabezal[] = {-1, -1, -1, -1, 0};  // 0 significa que el cabezal no se mueve en estado 3
+*/
+
+/*division por 2
+int estadoActual[] = {1, 1, 1, 1};
+int lecturas[] = {1, 0, 1, 0};
+int escribe[] = {1, 0, 0, 0};
+int estadoSig[] = {1, 1, 0, 0};  // El estado 0 indica que la operación ha terminado
+int mueveCabezal[] = {1, 1, 1, 1};  // Mueve siempre a la derecha
+*/
+
+/*multiplicacion x2
 int estadoActual[] = {1, 1, 2, 2};
 int lecturas[] = {0, 1, 1, 0};
 int escribe[] = {0, 0, 1, 1};
 int estadoSig[] = {1, 2, 2, 1};
 int mueveCabezal[] = {-1, -1, -1, -1};
-
-/*
-sumar binario +1
-estadoActual=[1,1,2,2]
-lecturas=[1,0,1,0]   
-escribe=[0,1,1,0]
-estadoSig=[1,2,2,2]
-mueveCabezal=[-1,-1,-1,-1]
 */
+
+
+/*sumar binario +1
+int estadoActual[]={1,1,2,2};
+int lecturas[]={1,0,1,0};
+int escribe[]={0,1,1,0};
+int estadoSig[]={1,2,2,2};
+int mueveCabezal[]={-1,-1,-1,-1};
+*/
+
+
 
 int binario_a_decimal(int cinta[], int n) {
     int decimal = 0;
-    
-    // Recorremos la cinta desde el final, multiplicando cada bit por 2 elevado a su posición
-    int l=0;
-    for (l = 0; l < n; l++) {
-        decimal += cinta[n - 1 - l] * pow(2, l);
+    int j=0;
+    for ( j = 0; j < n; j++) {
+        decimal += cinta[n - 1 - j] * pow(2, j);
     }
-
     return decimal;
 }
 
@@ -35,42 +51,39 @@ struct Acciones {
     int cabezal;
 };
 
-// Función para buscar el estado y la lectura
 struct Acciones buscar(int estadoA, int lecturaA) {
     struct Acciones acciones = {0, 0, 0};
     int i=0;
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 5; i++) {  // Se ajusta para que recorra todos los estados
         if (estadoA == estadoActual[i] && lecturaA == lecturas[i]) {
-            printf("Debe escribir: %d va al estado nuevo: %d mueve el cabezal a: %d\n", 
-                    escribe[i], estadoSig[i], mueveCabezal[i]);
             acciones.escribir = escribe[i];
             acciones.estado = estadoSig[i];
             acciones.cabezal = mueveCabezal[i];
             return acciones;
         }
     }
-    return acciones; // En caso de que no se encuentre una acción
+    return acciones;
 }
 
 int main() {
-    int cinta[] = {0, 0, 1, 0, 1, 0, 0, 1};
+    int cinta[] = {0, 0, 1, 0, 1, 0, 0, 1};  // Valor binario de 41
     int cabezal = 7;
     int estado = 1;
-    
-	printf("Numero actual: ");
-	int num = sizeof(cinta) / sizeof(cinta[0]);
+
+    printf("Numero actual: ");
+    int num = sizeof(cinta) / sizeof(cinta[0]);
     int decimalPrim = binario_a_decimal(cinta, num);
     printf("El numero binario es: ");
-    int j=0;
-    for (j = 0;j < num; j++) {
-        printf("%d", cinta[j]);
+    int k=0;
+    for (k = 0; k < num; k++) {
+        printf("%d", cinta[k]);
     }
-  
     printf("\nEn decimal es: %d\n", decimalPrim);
 
-    while (1) {
-        if (cabezal >= 1) {
-            printf("Estado actual %d valor en cinta %d ubicacion en cabezal: %d\n", 
+    // Ciclo de la máquina de Turing para realizar la resta
+    while (estado != 0) {  // La máquina termina cuando el estado es 0
+        if (cabezal >= 0 && cabezal < num) {
+            printf("Estado actual %d, valor en cinta %d, ubicacion en cabezal: %d\n", 
                     estado, cinta[cabezal], cabezal);
             struct Acciones accionesLc = buscar(estado, cinta[cabezal]);
             cinta[cabezal] = accionesLc.escribir;
@@ -82,14 +95,12 @@ int main() {
     }
 
     printf("Resultado final: ");
-    int n = sizeof(cinta) / sizeof(cinta[0]);
-    int decimal = binario_a_decimal(cinta, n);
+    int decimal = binario_a_decimal(cinta, num);
     printf("El numero binario es: ");
-    int k=0;
-    for (k = 0;k < n; k++) {
-        printf("%d", cinta[k]);
+    int l=0;
+    for (l = 0; l< num; l++) {
+        printf("%d", cinta[l]);
     }
-  
     printf("\nEn decimal es: %d\n", decimal);
 
     return 0;
