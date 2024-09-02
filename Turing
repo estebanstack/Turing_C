@@ -3,10 +3,10 @@
 
 /* Configuración de la resta (-1) 
 int estadoActual[] = {1, 1, 2, 2, 3};
-int lecturas[] = {1, 0, 0, 1, 0};
-int escribe[] = {0, 1, 1, 0, 1};
-int estadoSig[] = {3, 1, 2, 3, 0};  // El estado 3 indica que la operación ha terminado
-int mueveCabezal[] = {-1, -1, -1, -1, 0};  // 0 significa que el cabezal no se mueve en estado 3
+int lecturas[] = {1, 0, 1, 0, 0};
+int escribe[] = {0, 1, 0, 1, 0};
+int estadoSig[] = {3, 3, 2, 2, 0};  // Estado 3 ahora asegura que se detenga correctamente
+int mueveCabezal[] = {-1, -1, -1, -1, 0};  // Movimiento del cabezal
 */
 
 /*division por 2
