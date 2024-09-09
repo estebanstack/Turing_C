@@ -9,14 +9,6 @@ int estadoSig[] = {3, 3, 2, 2, 0};  // Estado 3 ahora asegura que se detenga cor
 int mueveCabezal[] = {-1, -1, -1, -1, 0};  // Movimiento del cabezal
 */
 
-/*division por 2
-int estadoActual[] = {1, 1, 1, 1};
-int lecturas[] = {1, 0, 1, 0};
-int escribe[] = {1, 0, 0, 0};
-int estadoSig[] = {1, 1, 0, 0};  // El estado 0 indica que la operación ha terminado
-int mueveCabezal[] = {1, 1, 1, 1};  // Mueve siempre a la derecha
-*/
-
 /*multiplicacion x2
 int estadoActual[] = {1, 1, 2, 2};
 int lecturas[] = {0, 1, 1, 0};
