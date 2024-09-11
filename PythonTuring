@@ -1,47 +1,101 @@
-class MaquinaTuring:
-    def __init__(self, cinta):
-        self.cinta = cinta
-        self.cabezal = len(cinta) - 1
-        self.estado = 1
-        
-        # Definición de las reglas de la máquina de Turing
-        self.estadoActual = [1, 1, 2, 2]
-        self.lecturas = [0, 1, 1, 0]
-        self.escribe = [0, 0, 1, 1]
-        self.estadoSig = [1, 2, 2, 1]
-        self.mueveCabezal = [-1, -1, -1, -1]
+import math
 
-    def buscar(self, estadoA, lecturaA):
-        """Busca las reglas basadas en el estado actual y la lectura."""
-        for i in range(len(self.estadoActual)):
-            if estadoA == self.estadoActual[i] and lecturaA == self.lecturas[i]:
-                print(f"Debe escribir: {self.escribe[i]} va al estado nuevo: {self.estadoSig[i]} mueve el cabezal a: {self.mueveCabezal[i]}")
-                return {
-                    "Escribir": self.escribe[i],
-                    "estado": self.estadoSig[i],
-                    "cabezal": self.mueveCabezal[i]
-                }
-        return None
+class TuringMachine:
+    def __init__(self, estado_actual, lecturas, escribe, estado_sig, mueve_cabezal):
+        self.estado_actual = estado_actual
+        self.lecturas = lecturas
+        self.escribe = escribe
+        self.estado_sig = estado_sig
+        self.mueve_cabezal = mueve_cabezal
 
-    def procesar(self):
-        """Procesa la cinta de acuerdo con las reglas de la máquina."""
-        while True:
-            if self.cabezal >= 1:
-                print(f"Estado actual {self.estado}, valor en cinta {self.cinta[self.cabezal]}, ubicacion en cabezal: {self.cabezal}")
-                accionesLc = self.buscar(self.estado, self.cinta[self.cabezal])
-                if accionesLc:
-                    self.cinta[self.cabezal] = accionesLc["Escribir"]
-                    self.estado = accionesLc["estado"]
-                    self.cabezal += accionesLc["cabezal"]
-                else:
-                    break
-            else:
-                break
-        print(f"Resultado final: {self.cinta}")
+    def binario_a_decimal(self, cinta):
+        decimal = 0
+        n = len(cinta)
+        for j in range(n):
+            decimal += cinta[n - 1 - j] * math.pow(2, j)
+        return int(decimal)
 
-# Uso de la clase MaquinaTuring
-cinta_inicial = [0, 0, 1, 0, 1, 0, 0, 1]
-print(f"Numero actual: {cinta_inicial}")
+    def buscar_acciones(self, estadoA, lecturaA):
+        for i in range(len(self.estado_actual)):  # Ajustado para recorrer todos los estados
+            if estadoA == self.estado_actual[i] and lecturaA == self.lecturas[i]:
+                return Acciones(self.escribe[i], self.estado_sig[i], self.mueve_cabezal[i])
+        return Acciones(0, 0, 0)  # Retorna acciones vacías si no hay coincidencias
 
-maquina = MaquinaTuring(cinta_inicial)
-maquina.procesar()
+class Acciones:
+    def __init__(self, escribir, estado, cabezal):
+        self.escribir = escribir
+        self.estado = estado
+        self.cabezal = cabezal
+
+def realizar_operacion(operacion, cinta):
+    if operacion == "resta":
+        estado_actual = [1, 1, 2, 2, 3]
+        lecturas = [1, 0, 1, 0, 0]
+        escribe = [0, 1, 0, 1, 0]
+        estado_sig = [3, 3, 2, 2, 0]
+        mueve_cabezal = [-1, -1, -1, -1, 0]
+    elif operacion == "multiplicacion":
+        estado_actual = [1, 1]  # Cambiamos las reglas
+        lecturas = [0, 1]  # Las lecturas son '0' y '1'
+        escribe = [0, 1]  # La multiplicación por 2 es desplazar y agregar 0
+        estado_sig = [1, 1]  # Se queda en el mismo estado
+        mueve_cabezal = [-1, -1]  # Movemos el cabezal hacia la izquierda para completar el desplazamiento
+    elif operacion == "suma":
+        estado_actual = [1, 1, 2, 2]
+        lecturas = [1, 0, 1, 0]
+        escribe = [0, 1, 1, 0]
+        estado_sig = [1, 2, 2, 2]
+        mueve_cabezal = [-1, -1, -1, -1]
+    else:
+        raise ValueError("Operación no reconocida")
+
+    turing_machine = TuringMachine(estado_actual, lecturas, escribe, estado_sig, mueve_cabezal)
+
+    cabezal = len(cinta) - 1
+    estado = 1
+
+    print("Número actual:")
+    num = len(cinta)
+    decimal_prim = turing_machine.binario_a_decimal(cinta)
+    print("El número binario es:", ''.join(map(str, cinta)))
+    print("En decimal es:", decimal_prim)
+
+    # Ciclo de la máquina de Turing
+    while estado != 0:  # La máquina termina cuando el estado es 0
+        if 0 <= cabezal < num:
+            print(f"Estado actual {estado}, valor en cinta {cinta[cabezal]}, ubicación en cabezal: {cabezal}")
+            accionesLc = turing_machine.buscar_acciones(estado, cinta[cabezal])
+            cinta[cabezal] = accionesLc.escribir
+            estado = accionesLc.estado
+            cabezal += accionesLc.cabezal
+        else:
+            break
+
+    # Para la multiplicación por 2, agregamos un '0' al final de la cinta
+    if operacion == "multiplicacion":
+        cinta.append(0)
+
+    print("Resultado final:")
+    decimal = turing_machine.binario_a_decimal(cinta)
+    print("El número binario es:", ''.join(map(str, cinta)))
+    print("En decimal es:", decimal)
+
+def main():
+    # Recibir el input en binario por parte del usuario
+    cinta_binaria = input("Ingresa el número binario: ")
+    cinta = [int(digito) for digito in cinta_binaria]  # Convertir el input en una lista de enteros
+    
+    # Resta (-1)
+    print("\n=== Operación de Resta (-1) ===")
+    realizar_operacion("resta", cinta.copy())
+
+    # Multiplicación por 2
+    print("\n=== Operación de Multiplicación por 2 ===")
+    realizar_operacion("multiplicacion", cinta.copy())
+
+    # Suma binaria +1
+    print("\n=== Operación de Suma binaria +1 ===")
+    realizar_operacion("suma", cinta.copy())
+
+if __name__ == "__main__":
+    main()
